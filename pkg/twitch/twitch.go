@@ -12,10 +12,7 @@ type TwitchBot interface {
 	Connect() error
 	Authenticate() error
 	SendMessage(message string) error
-	HandleGiveVip(userWhoWasGivenVip string)
-	HandleTakeVip(userWhoseVipWasTakenAway string)
 	Disconnect() error
-	Join(chat string) error
 }
 
 type twitchBot struct {
@@ -52,12 +49,6 @@ func (b *twitchBot) Authenticate() error {
 	return nil
 }
 
-// Join chat
-func (b *twitchBot) Join(chat string) error {
-	fmt.Fprintf(b.conn, "JOIN #%s\r\n", chat)
-	return nil
-}
-
 func (b *twitchBot) ReadMessages() error {
 	log.Println("Запуск чтения сообщений")
 	b.reader = bufio.NewReader(b.conn)
@@ -83,18 +74,6 @@ func (b *twitchBot) HandleMessage(message string) {
 func (b *twitchBot) SendMessage(message string) error {
 	_, err := fmt.Fprintf(b.conn, "PRIVMSG #%s :%s\r\n", b.vhost, message)
 	return err
-}
-
-// HandleGiveVip Handler for giving VIP status to the user
-func (b *twitchBot) HandleGiveVip(userWhoWasGivenVip string) {
-	b.SendMessage(fmt.Sprintf("/vip %s", userWhoWasGivenVip))
-	log.Println("Gave VIP status to", userWhoWasGivenVip)
-}
-
-// HandleTakeVip Handler for taking the VIP status from the user
-func (b *twitchBot) HandleTakeVip(userWhoseVipWasTakenAway string) {
-	b.SendMessage(fmt.Sprintf("/unvip %s", userWhoseVipWasTakenAway))
-	log.Println("Took VIP status from", userWhoseVipWasTakenAway)
 }
 
 // Disconnect Chat disconnect handler
