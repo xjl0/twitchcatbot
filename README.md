@@ -5,7 +5,7 @@
 
 ## Настройка бота
 
-Настройка config.yaml
+Настройка config/config.yaml
 
 ```yaml
 twitch:
